@@ -1,23 +1,30 @@
 sudo: required
 services:
+# OMM - list the dependencies, what travis needs to build
   - docker
 
 before_install:
+# OMM - create the image
   - docker build -t lexworks/docker-react -f Dockerfile.dev .
 
 script:
+# OMM - run test against image just created
   - docker run lexworks/docker-react npm run test -- --coverage
 
 deploy:
+# OMM - deployment to AWS/Azure/etc; need to be updated to reflect my AWS account details
   provider: elasticbeanstalk
-  region: "us-west-2"
-  app: "docker"
-  env: "Docker-env"
-  bucket_name: "elasticbeanstalk-us-west-2-306476627547"
-  bucket_path: "docker"
+  region: "ap-southeast-1"
+  app: "bdoreactapp-env"
+  env: "BdoreactappEnv-env"
+  bucket_name: "elasticbeanstalk-ap-southeast-1-005589471932"
+  bucket_path: "bdoreactapp-env"
   on:
+  # OMM - do these when there's a change to the master branch
+  #     - vars defined as ENVVARS in travisci-org for bdoreactapp
     branch: master
   access_key_id: $AWS_ACCESS_KEY
+  # OMM - create IAM account for travis
   secret_access_key:
     secure: "$AWS_SECRET_KEY"
 
